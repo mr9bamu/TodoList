@@ -13,7 +13,9 @@ import { ADD_TASK } from '../mutations';
 class App extends Component {
     constructor(props) {
         super(props)
-        this.state = { name: '' };
+        this.state = {
+             name: ''
+            };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -38,13 +40,16 @@ class App extends Component {
                 //GetTasks from cache , not from database to load locally       
                 const data = store.readQuery({ query: GET_TASKS });  
                 //Add the new task we generated to the local dataset 
+                console.log(data.tasks);
                 data.tasks.push(addTask);
-                //Write the new dataset as the cache ------ DOES NOT WORK IDK WHY 
-                store.writeQuery({ query: GET_TASKS, data });
-                this.setState({ name: '' });
+                console.log(data.tasks);
+                //this sets name but not items...
+                this.setState({ 
+                    name: '',
+                    items: data
+                 });
             },
         }).then(function handleChange(response) {
-            this.setState({ name: '' });
             console.log(response);
         });
     }

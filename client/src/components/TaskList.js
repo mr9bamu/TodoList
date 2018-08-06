@@ -6,6 +6,7 @@ import { COMPLETE_TASK } from '../mutations';
 import { DELETE_TASK } from '../mutations';
 import { GET_TASKS } from '../queries';
 import { graphql, compose } from 'react-apollo';
+import ListItem from './ListItem';
 
 // Create a todo list react component to display list of tasks
 class TaskList extends React.Component {
@@ -20,45 +21,45 @@ class TaskList extends React.Component {
     }
 
     deleteTask(item) {
-        const variables = {
-            id: item.id,
-        }
-        console.log(item.id);
-        console.log(this.props);
         this.props.removeTask({
             variables: {
                 id: item.id,
             },
-            update: (store, { data: { removeTask } }) => {
-                const data = store.readQuery({
-                    query: GET_TASKS
-                })
-                data.tasks = data.tasks.filter(task => task.id !== item.id)
-                store.writeQuery({ query: GET_TASKS, data })
-            }
         }).then(function getResponse(response) {
             console.log(response);
         });
+        //set the state to the list with non deleted items
+        this.setState(prevState => ({
+            items: prevState.items.filter(task => task != item)
+        }));
     }
 
+
     checkTask(item) {
+        //call mutator method
         this.props.completeTask({
             variables: {
                 id: item.id,
                 isDone: !item.isDone,
             },
             update: (store, { data: { completeTask } }) => {
-                const data = this.state.tasks.slice();
-                const index = data.findIndex(task => task.id === completeTask.id);
+                //
+                const data = this.state.items.slice();
+                //get index 
+                const index = data.findIndex(item => item.id === completeTask.id);
+                //this is sketchy
+                completeTask.isDone = !completeTask.isDone;
                 data[index] = completeTask;
+                console.log(data[index]);
                 this.setState({
-                    tasks: data
+                    items: data
                 })
             }
         }).then(function getResponse(response) {
             console.log(response);
         })
     }
+
     editButton() {
     }
 
@@ -77,18 +78,11 @@ class TaskList extends React.Component {
 
                     this.state.items.map(item => {
                         return <li key={item.id}>
-                            <input type="checkbox" checked={item.isDone} onClick={() => this.checkTask(item)}></input>
-                            {item.name}
+                            <input type="checkbox" checked={item.isDone} onChange={() => this.checkTask(item)}></input>
+                            <ListItem task={item} />
                             <button onClick={() => this.deleteTask(item)}>
                                 {'delete'}
                             </button>
-                            <input
-                                className="addTask"
-                                onChange={this.handleChange}
-                                value={this.state.name}
-                                placeholder={'Change Task'}
-                                size="4"
-                            />
                         </li>
 
                     })
