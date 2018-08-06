@@ -8,7 +8,7 @@ import { HttpLink }  from "apollo-link-http";
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 
-
+//connect client to graphql
 const client = new ApolloClient({
   link: new HttpLink(
     {
@@ -17,7 +17,7 @@ const client = new ApolloClient({
     cache: new InMemoryCache()
 });
 
-//so you can manipulate db within react
+//so you can manipulate database within react
 ReactDOM.render(<ApolloProvider client={client}>
 
     <App />

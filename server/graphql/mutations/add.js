@@ -20,7 +20,6 @@ exports.add = {
     if (!newTask) {
       throw new Error('Error');
     }
-    //assign id here maybe
     return newTask;
   }
 }

@@ -4,7 +4,7 @@ var GraphQLID = require('graphql').GraphQLID;
 var GraphQLString = require('graphql').GraphQLString;
 var GraphQLBoolean = require('graphql').GraphQLBoolean;
 
-// Task Type
+// Task Type objet schema
 exports.todoType = new GraphQLObjectType({
   name: 'task',
   fields: function () {

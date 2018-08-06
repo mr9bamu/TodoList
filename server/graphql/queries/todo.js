@@ -24,4 +24,4 @@ exports.queryType = new GraphQLObjectType({
 });
 
 
-
+//could add queries for showing specific items ie:a=show all items where isDone==false

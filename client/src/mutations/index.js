@@ -1,6 +1,8 @@
 import gql from "graphql-tag";
 
-//create your GraphQL mutation, wrap it in gql
+//create your GraphQL mutations and wrap them in gql
+
+//set isDone to false by default when tasks are added
 export const ADD_TASK = gql`
   mutation AddTask($name: String!){
     addTask(name: $name, isDone: false){
@@ -11,6 +13,7 @@ export const ADD_TASK = gql`
   }
 `;
 
+//should be named changeStatus because it sets is done to either true or false depending on input
 export const COMPLETE_TASK = gql`
 mutation completeTask($id: ID!, $isDone: Boolean!) {
     completeTask(id: $id, isDone: $isDone){

@@ -7,18 +7,14 @@ import { GET_TASKS } from '../queries';
 
 import TaskList  from "./TaskList";
 
-
-
 //create app
 class App extends Component {
+    //just props no state declaration required
     constructor(props) {
         super(props)
-        this.state = {
-             name: '',
-            };
     }
 
-
+    //render the app using TaskList
     render() {
         const loading = this.props.getTasks.loading;
         if (loading){
@@ -26,8 +22,7 @@ class App extends Component {
         }
         return (
             <div className="App">
-                <h1>Todo...</h1>
-                
+                <h1>Todo...</h1>             
                     <TaskList items={this.props.getTasks.tasks}/>
                 </div>
         );

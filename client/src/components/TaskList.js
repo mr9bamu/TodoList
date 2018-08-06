@@ -1,7 +1,7 @@
 import React from 'react';
 import { graphql, compose } from 'react-apollo';
 
-//import mutations & queris
+//import mutations & queries
 import { ADD_TASK } from '../mutations';
 import { COMPLETE_TASK } from '../mutations';
 import { DELETE_TASK } from '../mutations';
@@ -22,21 +22,24 @@ class TaskList extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    //change state.name variable
+    //change state.name variable. Called when the user types in the input
     handleChange(e) {
         this.setState({ name: e.target.value });
     }
 
+    //Called when the user submits the form
     handleSubmit(e) {
         e.preventDefault();
-        //if the length of your name doesn't... don't. 
+        //If a user attempts to submit nothing just return 
         if (!this.state.name.length) {
             return;
         }
+        //use mutator method to update the database
         this.props.addNewTask({
             variables: {
                 name: this.state.name,
             },
+            //set the state to rerender the TaskList with the new task included
             update: (store, { data: { addTask } }) => {
                 this.setState({
                     name: '',
@@ -48,7 +51,9 @@ class TaskList extends React.Component {
         });
     }
 
+    //Called when the user hits the delete button
     deleteTask(item) {
+        //use mutator method to update the database
         this.props.removeTask({
             variables: {
                 id: item.id,
@@ -64,21 +69,22 @@ class TaskList extends React.Component {
 
 
     checkTask(item) {
-        //call mutator method
+        //call mutator method to update database
         this.props.completeTask({
             variables: {
                 id: item.id,
+                //set isdone the NOT isDone
                 isDone: !item.isDone,
             },
             update: (store, { data: { completeTask } }) => {
-                //
+                //get the array of items
                 const data = this.state.items.slice();
-                //get index 
+                //get index of completed task
                 const index = data.findIndex(item => item.id === completeTask.id);
-                //this is sketchy
+                //Update the isDone of completed task on the front end
                 completeTask.isDone = !completeTask.isDone;
                 data[index] = completeTask;
-                console.log(data[index]);
+                //set state so the isDone field corresponds with database without reloading page
                 this.setState({
                     items: data
                 })
@@ -88,10 +94,12 @@ class TaskList extends React.Component {
         })
     }
 
+    //Render the list of Tasks
     render() {
 
         return (
 
+            //Input bar at the top of the page uses event handlers to addTask
             <div className='taskList'>
                 <form onSubmit={this.handleSubmit}>
                     <div className='input'>
@@ -103,9 +111,12 @@ class TaskList extends React.Component {
                         />
                     </div>
                 </form>
+                
                 <ul className="tasks">
                     {
-
+                        //Map the List of individual items 
+                        //Use the ListItem class to display the item name and its edit functionality
+                        //Add a checkbox and delete button to use delete and check mutator methods
                         this.state.items.map(item => {
                             return <li key={item.id}>
                                 <input type="checkbox" checked={item.isDone} onChange={() => this.checkTask(item)}></input>
@@ -125,7 +136,7 @@ class TaskList extends React.Component {
     }
 }
 
-
+//Export all querys and mutations used in this class aswell as the class itself
 export default compose(graphql(GET_TASKS, { name: 'getTasks' }),
     graphql(DELETE_TASK, { name: 'removeTask' }),
     graphql(COMPLETE_TASK, { name: 'completeTask' }), 
