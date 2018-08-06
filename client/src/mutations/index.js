@@ -32,7 +32,7 @@ export const DELETE_TASK = gql`
     }`;
 
 export const UPDATE_TASK = gql`
-    mutation updateTask($id: ID!, $name: String){
+    mutation updateTask($id: ID!, $name: String!){
         updateTask(id:$id, name: $name){
             id
             name

@@ -14,7 +14,8 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.state = {
-             name: ''
+             name: '',
+             items:this.props.items
             };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);

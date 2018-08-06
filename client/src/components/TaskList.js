@@ -75,13 +75,13 @@ class TaskList extends React.Component {
 
             <ul className="tasks">
                 {
-
+                    
                     this.state.items.map(item => {
                         return <li key={item.id}>
                             <input type="checkbox" checked={item.isDone} onChange={() => this.checkTask(item)}></input>
                             <ListItem task={item} />
                             <button onClick={() => this.deleteTask(item)}>
-                                {'delete'}
+                                {'Delete'}
                             </button>
                         </li>
 
