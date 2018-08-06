@@ -1,23 +1,51 @@
 import React from 'react';
-//import Checkbox from './Checkbox';
-//import gql from 'graphql-tag';
-//import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
+
+//import mutations & queris
+import { ADD_TASK } from '../mutations';
 import { COMPLETE_TASK } from '../mutations';
 import { DELETE_TASK } from '../mutations';
 import { GET_TASKS } from '../queries';
-import { graphql, compose } from 'react-apollo';
+
 import ListItem from './ListItem';
 
-// Create a todo list react component to display list of tasks
 class TaskList extends React.Component {
 
+    //Constuctor sets state and event handlers
     constructor(props) {
         super(props);
-        //this.state = { id: '' };
         this.state = {
             items: this.props.items,
-            editing: false
+            editing: false,
+            name: ''
         };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    //change state.name variable
+    handleChange(e) {
+        this.setState({ name: e.target.value });
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        //if the length of your name doesn't... don't. 
+        if (!this.state.name.length) {
+            return;
+        }
+        this.props.addNewTask({
+            variables: {
+                name: this.state.name,
+            },
+            update: (store, { data: { addTask } }) => {
+                this.setState({
+                    name: '',
+                    items: [...this.state.items,addTask]
+                });
+            },
+        }).then(function handleChange(response) {
+            console.log(response);
+        });
     }
 
     deleteTask(item) {
@@ -60,35 +88,38 @@ class TaskList extends React.Component {
         })
     }
 
-    editButton() {
-    }
-
-
-    completeTask(item) {
-        console.log(item.id);
-        // change item.name into a text box and then on submit update item.name
-    }
-
     render() {
 
         return (
 
-            <ul className="tasks">
-                {
-                    
-                    this.state.items.map(item => {
-                        return <li key={item.id}>
-                            <input type="checkbox" checked={item.isDone} onChange={() => this.checkTask(item)}></input>
-                            <ListItem task={item} />
-                            <button onClick={() => this.deleteTask(item)}>
-                                {'Delete'}
-                            </button>
-                        </li>
+            <div className='taskList'>
+                <form onSubmit={this.handleSubmit}>
+                    <div className='input'>
+                        <input
+                            className="addTask"
+                            onChange={this.handleChange}
+                            value={this.state.name}
+                            placeholder={'Add a task'}
+                        />
+                    </div>
+                </form>
+                <ul className="tasks">
+                    {
 
-                    })
+                        this.state.items.map(item => {
+                            return <li key={item.id}>
+                                <input type="checkbox" checked={item.isDone} onChange={() => this.checkTask(item)}></input>
+                                <ListItem task={item} />
+                                <button onClick={() => this.deleteTask(item)}>
+                                    {'Delete'}
+                                </button>
+                            </li>
 
-                }
-            </ul>
+                        })
+
+                    }
+                </ul>
+            </div>
 
         );
     }
@@ -97,5 +128,6 @@ class TaskList extends React.Component {
 
 export default compose(graphql(GET_TASKS, { name: 'getTasks' }),
     graphql(DELETE_TASK, { name: 'removeTask' }),
-    graphql(COMPLETE_TASK, { name: 'completeTask' }))
+    graphql(COMPLETE_TASK, { name: 'completeTask' }), 
+    graphql(ADD_TASK, { name: 'addNewTask'}))
     (TaskList);

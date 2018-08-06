@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import gql from 'graphql-tag';
 import { graphql, Mutation, compose } from 'react-apollo';
 import { UPDATE_TASK } from '../mutations';
 
@@ -14,8 +13,13 @@ class ListItem extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    saveButton() {
-        console.log(this.state.name);
+    editTask() {
+        this.setState({
+            editing: true
+        });
+    }
+
+    saveTask() {
         this.props.updateTask({
             variables: {
                 id: this.state.id,
@@ -37,13 +41,13 @@ class ListItem extends Component {
     }
 
 
-    createTask() {
+    showTask() {
         if (this.state.editing === true) {
             return (
                 <span>
                     <input
                         value={this.state.name} onChange={this.handleChange} />
-                    <button className="save" onClick={() => this.saveButton()}>Save</button>
+                    <button className="save" onClick={() => this.saveTask()}>Save</button>
                 </span>
             );
         }
@@ -51,20 +55,14 @@ class ListItem extends Component {
             return (
                 <span id={this.state.id}>
                     {this.state.name}
-                    <button className="edit" onClick={() => this.editButton()}>Edit</button>
+                    <button className="edit" onClick={() => this.editTask()}>Edit</button>
                 </span>
             );
         }
     }
 
-    editButton() {
-        this.setState({
-            editing: true
-        });
-    }
-
     render() {
-        return (this.createTask());
+        return (this.showTask());
     }
 }
 

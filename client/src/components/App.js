@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
+import { graphql, compose } from 'react-apollo';
 
 import './App.css';
-//import gql from 'graphql-tag';
-import { graphql, compose } from 'react-apollo';
-import TaskList  from "./TaskList";
-//import query
+
 import { GET_TASKS } from '../queries';
-//import mutation
-import { ADD_TASK } from '../mutations';
+
+import TaskList  from "./TaskList";
+
+
 
 //create app
 class App extends Component {
@@ -15,45 +15,9 @@ class App extends Component {
         super(props)
         this.state = {
              name: '',
-             items:this.props.items
             };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-  
-    //change state.name variable
-    handleChange(e) {
-        this.setState({ name: e.target.value });
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        //if the length of your name doesn't... don't. 
-        if (!this.state.name.length) {
-            return;
-        }
-        this.props.addNewTask({
-            variables: {
-                name: this.state.name,
-            },
-            update: (store, { data: { addTask } }) => { 
-                //By this point in execution, the new task is already added. 
-                //GetTasks from cache , not from database to load locally       
-                const data = store.readQuery({ query: GET_TASKS });  
-                //Add the new task we generated to the local dataset 
-                console.log(data.tasks);
-                data.tasks.push(addTask);
-                console.log(data.tasks);
-                //this sets name but not items...
-                this.setState({ 
-                    name: '',
-                    items: data
-                 });
-            },
-        }).then(function handleChange(response) {
-            console.log(response);
-        });
-    }
 
     render() {
         const loading = this.props.getTasks.loading;
@@ -63,26 +27,14 @@ class App extends Component {
         return (
             <div className="App">
                 <h1>Todo...</h1>
-                <div className='taskList'>
-                    <form onSubmit={this.handleSubmit}>
-                        <div className='input'>
-                            <input
-                                className="addTask"
-                                onChange={this.handleChange}
-                                value={this.state.name}
-                                placeholder={'Add a task'}
-                            />
-                        </div>
-                    </form>
+                
                     <TaskList items={this.props.getTasks.tasks}/>
                 </div>
-            </div>
         );
     }
 }
 
-export default compose(graphql(GET_TASKS, { name: 'getTasks' }), 
-    graphql(ADD_TASK, { name: 'addNewTask'}))
+export default compose(graphql(GET_TASKS, { name: 'getTasks' }))
     (App);
 
     
