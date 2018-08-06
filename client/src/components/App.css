@@ -1,0 +1,51 @@
+body{
+  background-color:  rgb(116, 194, 186);
+}
+
+.App{
+  text-align: center;
+  font-size: xx-large;
+  color: rgb(100, 100, 100);
+}
+
+input{
+  border: none;
+  border-bottom: 3px solid teal;
+}
+
+.taskList{
+  background-color: rgb(181, 230, 230);
+}
+
+ul {
+  list-style-type: none;
+}
+
+li:hover{
+    background-color: rgb(166, 218, 218);
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
