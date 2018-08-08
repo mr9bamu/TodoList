@@ -1,95 +1,39 @@
-import { makeExecutableSchema, addMockFunctionsToSchema } from 'graphql-tools';
-import { graphql } from 'graphql';
-import { GraphQLError } from 'graphql/error';
+const tester = require('graphql-tester').tester;
 
-const {
-  typeDefs,
-} = require('../../../../core/schema/index');
-
-const schema = makeExecutableSchema({ typeDefs });
-addMockFunctionsToSchema({ schema });
-
-describe('GraphQL Query', () => {
-  const query = `
-    query getUserData {
-        me {
-            id
-            client(id: 43) {
-                id
-                project(id: 2) {
-                    id
-                    contract(id: 8) {
-                        id
-                        kbes {
-                            kbe_id
-                            kbe_references {
-                                annotation_id
-                                ranges {
-                                    start
-                                    end
-                                    startOffset
-                                    endOffset
-                                }
-                            }
+describe('Graphql quieries should be able to', function () {
+    const self = this;
+    beforeAll(() => {
+        self.test = tester({
+            url: 'http://localhost:4000/graphql',
+            contentType: 'application/json'
+        });
+    });
+    it('adds a new task', done => {
+        self
+            .test(
+                JSON.stringify({
+                    query: `mutation addItem($item: String!, $isDone: Boolean!){
+                        addItem(item: $item, isDone: $isDone){
+                          id
+                          item
+                          isDone
                         }
+                      }`,
+                    variables: {
+                        item: "Get new Item added from unit test",
+                        isDone: false
                     }
-                }
-            }
-        }
-    }
-  `;
-  test('run successfully', () => {
-    graphql(schema, query).then((result) => {
-      expect(result).toBeTruthy();
+                })
+            ).then(res => {
+                self.tempID = res.data.addItem.id;
+                console.log(self.tempID);
+                expect(res.data.addItem.item).toBe("Get new Item added from unit test");
+                expect(res.status).toBe(200);
+                expect(res.success).toBe(true);
+                done();
+            }).catch(err => {
+                expect(err).toBe(null);
+                done();
+            });
     });
-  });
-
-  test('annotation range resolves startOffset', () => {
-    graphql(schema, query).then((result) => {
-      expect(result.data.me.client.project.contract.kbes
-        .kbe_references.ranges.startOffset).toBe(43);
-    });
-  });
-
-  test('result is not null', () => {
-    graphql(schema, query).then((result) => {
-      expect(result).not.toBeNull();
-    });
-  });
-});
-
-describe('GraphQL Query', () => {
-  // Should throw GraphQLError
-  // message: 'Syntax Error GraphQL request Expected Name, found }'
-  const query = `
-    query getUserData {
-        me {
-            id
-            client(id: 43) {
-                id
-                project(id: 2) {
-                    id
-                    contract(id: 8) {
-                        id
-                        kbes {
-                            kbe_id
-                            kbe_references {
-                                annotation_id
-                                ranges {
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-  `;
-
-  test('Throws GraphQLError if no field selected for annotation ranges', () => {
-    graphql(schema, query)
-      .catch((result) => {
-        expect(result).toThrow(GraphQLError);
-      });
-  });
-});
+})

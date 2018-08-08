@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { graphql, compose } from 'react-apollo';
 
-import './App.css';
+/*Comment out css for testing*/
+//import './App.css';
 
 import { GET_TASKS } from '../queries';
 
