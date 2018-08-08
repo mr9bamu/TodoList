@@ -10,6 +10,8 @@
     "graphql": "^0.11.7",
     "graphql-tag": "^2.5.0",
     "jest": "^23.4.2",
+    "jest-css-modules-transform": "^2.0.0",
+    "jest-transform-graphql": "^2.1.0",
     "react": "^16.0.0",
     "react-apollo": "^2.0.0",
     "react-dom": "^16.0.0",
@@ -25,6 +27,11 @@
   "jest": {
     "verbose": true,
     "testURL": "http://localhost/",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "transform": {
+      "\\.(gql|graphql)$": "jest-transform-graphql",
+      "\\.(css|scss)$": "jest-css-modules-transform",
+      ".*": "babel-jest"
     }
   }
+}
