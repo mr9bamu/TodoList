@@ -82,7 +82,7 @@ class TaskList extends React.Component {
                 //get index of completed task
                 const index = data.findIndex(item => item.id === completeTask.id);
                 //Update the isDone of completed task on the front end
-                completeTask.isDone = !completeTask.isDone;
+                //completeTask.isDone = !completeTask.isDone;
                 data[index] = completeTask;
                 //set state so the isDone field corresponds with database without reloading page
                 this.setState({

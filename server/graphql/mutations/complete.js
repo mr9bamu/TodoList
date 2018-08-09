@@ -15,12 +15,12 @@ exports.complete = {
       type: new GraphQLNonNull(GraphQLBoolean),
     }
   },
-// to mark task as done?
-    resolve(root, params) {
-        return TodoModel.findByIdAndUpdate(
-          params.id,
-          { $set: { isDone: params.isDone } }
-        )
-          .catch(err => new Error(err));
-      }
-    }
+  resolve(root, params) {
+    return TodoModel.findByIdAndUpdate(
+      params.id,
+      { $set: { isDone: params.isDone } },
+      { new: true }
+    )
+      .catch(err => new Error(err));
+  }
+}
